@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Auciele Alves — Arquitetura de Ponta a Ponta</title>
+  <meta name="description" content="Auciele Alves Arquitetura — projetos residenciais e comerciais com sensibilidade estética e precisão técnica, do conceito à entrega." />
+
+  <!-- Encode Sans Expanded é a única fonte do site -->
+
+  <style>
+    /* ── Brand Fonts (Encode Sans Expanded) ─────────────── */
+    @font-face {
+      font-family: 'EncodeSans';
+      src: url('assets/fonts/EncodeSansExpanded-ExtraLight.ttf') format('truetype');
+      font-weight: 200;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'EncodeSans';
+      src: url('assets/fonts/EncodeSansExpanded-Light.ttf') format('truetype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'EncodeSans';
+      src: url('assets/fonts/EncodeSansExpanded-Medium.ttf') format('truetype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* ── Variables ──────────────────────────────────────── */
+    :root {
+      --cream:      #fff8eb;
+      --cream-alt:  #bcaf8f;
+      --gold:       #bcaf8f;
+      --gold-dark:  #9e9070;
+      --espresso:   #3f3329;
+      --olive:      #e5e2ab;
+      --charcoal:   #3f3329;
+      --warm-gray:  #3f3329;
+      --white:      #ffffff;
+
+      --font-sans: 'EncodeSans', sans-serif;
+
+      --page-margin:  clamp(32px, 6vw, 96px);
+      --section-pad:  clamp(80px, 10vw, 140px);
+
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ── Reset ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--cream);
+      color: var(--charcoal);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { display: block; max-width: 100%; }
+    a  { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    button { cursor: pointer; border: none; background: none; font: inherit; }
+
+    /* ── Layout — wrapper universal de margem ───────────── */
+    .inner {
+      padding-inline: var(--page-margin);
+    }
+    .section-label {
+      font-family: var(--font-sans);
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+      display: block;
+    }
+
+    /* ── Scroll reveal ──────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .d1 { transition-delay: 0.10s; }
+    .d2 { transition-delay: 0.22s; }
+    .d3 { transition-delay: 0.36s; }
+    .d4 { transition-delay: 0.50s; }
+
+    /* ══════════════════════════════════════════════════════
+       NAV  —  barra creme, logo cavalgando a fronteira
+    ══════════════════════════════════════════════════════ */
+    :root {
+      --nav-h: clamp(68px, 7.5vw, 88px);
+      --logo-h: clamp(78px, 9vw, 108px);
+    }
+    #nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      background: var(--cream);
+      overflow: visible;
+      padding-inline: var(--page-margin);
+      display: flex;
+      align-items: center;
+      transition: background 0.5s ease, backdrop-filter 0.5s ease, box-shadow 0.5s ease;
+    }
+    #nav.transparent {
+      background: rgba(255, 248, 235, 0.72);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 1px 0 rgba(188,175,143,.15);
+    }
+    .nav-inner {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Logo — centralizado verticalmente na borda nav/hero */
+    .nav-logo {
+      display: block;
+      line-height: 0;
+      position: relative;
+      z-index: 101;
+    }
+    .nav-mark {
+      height: var(--logo-h);
+      width: auto;
+      object-fit: contain;
+      /* segunda haste do A alinhada com a borda esquerda da imagem */
+      transform: translateX(-52%) translateY(calc(var(--nav-h) / 2 - 14.5px));
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      width: 26px;
+      padding: 4px 0;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+    .hamburger span {
+      height: 1px;
+      background: var(--espresso);
+      display: block;
+    }
+    .hamburger span:nth-child(2) { width: 65%; margin-left: auto; }
+
+    /* Mobile nav drawer */
+    .mobile-overlay {
+      position: fixed; inset: 0;
+      background: rgba(44,31,20,.55);
+      z-index: 199;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.4s;
+    }
+    .mobile-overlay.open { opacity: 1; pointer-events: all; }
+    .mobile-drawer {
+      position: fixed;
+      top: 0; right: -100%;
+      width: min(340px, 90vw);
+      height: 100vh;
+      background: var(--espresso);
+      z-index: 200;
+      padding: 72px 40px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: right 0.5s var(--ease-out);
+    }
+    .mobile-drawer.open { right: 0; }
+    .mobile-drawer a {
+      font-family: var(--font-sans);
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--cream);
+      border-bottom: 1px solid rgba(188,175,143,.15);
+      padding-block: 22px;
+    }
+    .drawer-close {
+      position: absolute;
+      top: 20px; right: 24px;
+      color: rgba(255,248,235,.5);
+      font-size: 22px;
+      font-weight: 200;
+      line-height: 1;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       HERO  —  full bleed, abaixo da barra creme
+    ══════════════════════════════════════════════════════ */
+    #hero {
+      width: 100%;
+      height: calc(100svh - var(--nav-h));
+      min-height: 480px;
+      overflow: hidden;
+      display: block;
+      position: relative;
+    }
+    #hero img:first-child {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 40%;
+      display: block;
+    }
+
+    /* Wordmark AUCIELE ALVES — letras encostam na base da hero */
+    .hero-wordmark {
+      position: absolute;
+      /*
+        SVG viewBox altura: 324.61
+        Texto termina em ~y=208 → espaço vazio abaixo = ~36% da altura do SVG
+        Altura renderizada a 160vw = 160vw × (324.61/1080) = ~48vw
+        Espaço vazio = 48vw × 36% = ~17vw  →  descer 17vw para letras tocarem a borda
+      */
+      /* Frame 1.svg: texto vai de x≈10 a x≈1787 em 1920px (93%)
+         SVG interno tem 88% de texto → 93/88 = 1.057 → ~106vw cobre a largura
+         Base das letras em y=1075 de 1080px → whitespace abaixo ≈ 0.5%
+         SVG tem 36% de whitespace abaixo do texto → bottom = -(36% × altura SVG)
+         Altura a 106vw = 106vw × 0.3006 = 31.9vw → bottom = -11.5vw */
+      bottom: -11.8vw;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 111vw;
+      z-index: 5;
+      pointer-events: none;
+      line-height: 0;
+    }
+    .hero-wordmark img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       SOBRE — editorial, bento grid como referência
+    ══════════════════════════════════════════════════════ */
+    #sobre { padding-block: var(--section-pad); background: var(--cream); }
+    .section-label { font-size: 13px; font-weight: 300; letter-spacing: 0.22em; text-transform: uppercase; color: var(--warm-gray); display: block; }
+
+    /* Layout: imagem esquerda | texto + stats direita */
+    .sobre-layout { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(40px,6vw,80px); align-items: center; }
+    .sobre-img-col { overflow: hidden; aspect-ratio: 4/3; }
+    .sobre-img-col img { width: 100%; height: 100%; object-fit: cover; object-position: center 28%; display: block; }
+    .sobre-text-col { display: flex; flex-direction: column; gap: clamp(18px,2.5vw,28px); padding-top: 8px; }
+    .sobre-name { font-size: clamp(28px,3.8vw,48px); font-weight: 200; color: var(--espresso); letter-spacing: 0.03em; line-height: 1.1; }
+    .sobre-tagline-txt { font-size: 11px; font-weight: 200; letter-spacing: 0.24em; text-transform: lowercase; color: var(--gold-dark); margin-top: -6px; }
+    .sobre-desc { font-size: 16px; font-weight: 200; line-height: 1.85; color: var(--warm-gray); }
+    .sobre-stats-row { display: flex; margin-top: 8px; align-items: flex-start; }
+    .stat-sq { display: flex; flex-direction: column; gap: 6px; padding-right: clamp(24px,4vw,48px); margin-right: clamp(24px,4vw,48px); border-right: 1px solid rgba(188,175,143,.4); }
+    .stat-sq:last-child { border-right: none; padding-right: 0; margin-right: 0; }
+    .sq-num { font-size: clamp(28px,3.5vw,44px); font-weight: 200; color: var(--espresso); line-height: 1; }
+    .sq-lbl { font-size: 9px; font-weight: 200; letter-spacing: 0.2em; text-transform: uppercase; color: var(--warm-gray); }
+
+    /* ══════════════════════════════════════════════════════
+       SERVIÇOS — list format
+    ══════════════════════════════════════════════════════ */
+    #servicos { padding-block: var(--section-pad); background: var(--cream-alt); }
+    .serv-top { margin-bottom: clamp(48px,6vw,72px); }
+    .serv-heading { font-size: clamp(32px,4vw,52px); font-weight: 200; color: var(--espresso); margin-top: 16px; letter-spacing: -0.01em; }
+    .serv-list { list-style: none; }
+    .serv-item { display: grid; grid-template-columns: 56px 1fr 1fr auto; align-items: center; gap: 24px; padding-block: clamp(24px,3vw,36px); border-top: 1px solid rgba(63,51,41,.25); cursor: pointer; transition: background .3s; }
+    .serv-item:last-child { border-bottom: 1px solid rgba(63,51,41,.25); }
+    .serv-item:hover { background: rgba(188,175,143,.08); margin-inline: -24px; padding-inline: 24px; }
+    .serv-num { font-size: 11px; font-weight: 200; color: var(--espresso); letter-spacing: 0.1em; }
+    .serv-name { font-size: clamp(18px,2.2vw,26px); font-weight: 300; color: var(--espresso); }
+    .serv-desc { font-size: 16px; font-weight: 200; color: var(--warm-gray); line-height: 1.6; }
+    .serv-arrow { color: var(--gold); flex-shrink: 0; transition: transform .3s; }
+    .serv-item:hover .serv-arrow { transform: translateX(6px); }
+
+    /* ══════════════════════════════════════════════════════
+       PORTFÓLIO — numbered editorial grid
+    ══════════════════════════════════════════════════════ */
+    /* ── PORTFÓLIO — slider ─────────────────────────────── */
+    #portfolio { padding-block: var(--section-pad) 0; background: var(--cream); overflow: hidden; }
+    .port-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: clamp(32px,4vw,48px); }
+    .port-heading { font-size: clamp(28px,3.5vw,48px); font-weight: 200; color: var(--espresso); letter-spacing: -0.01em; line-height: 1.1; }
+    .port-counter { font-size: 11px; font-weight: 200; letter-spacing: 0.18em; color: var(--warm-gray); padding-bottom: 4px; }
+
+    /* Slider com margens */
+    .port-slider-wrap { overflow: hidden; }
+    .port-track {
+      display: flex;
+      transition: transform 0.75s cubic-bezier(0.16,1,0.3,1);
+      will-change: transform;
+    }
+    .port-slide { min-width: 100%; position: relative; flex-shrink: 0; padding-inline: var(--page-margin); box-sizing: border-box; }
+    /* Gradiente dentro da imagem, não excede as margens */
+    .port-slide::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: var(--page-margin);
+      right: var(--page-margin);
+      height: 65%;
+      background: linear-gradient(to top, rgba(40,28,18,.72) 0%, rgba(40,28,18,.2) 50%, transparent 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .port-slide-img { width: 100%; height: 715px; object-fit: cover; display: block; }
+
+    /* Overlay info */
+    .port-slide-info {
+      position: absolute; bottom: 0;
+      left: var(--page-margin); right: var(--page-margin);
+      padding: clamp(24px,3vw,48px);
+      background: none;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      z-index: 2;
+    }
+    .port-slide-num { font-size: 10px; font-weight: 200; letter-spacing: 0.24em; color: rgba(255,248,235,.55); display: block; margin-bottom: 6px; }
+    .port-slide-title { font-size: clamp(18px,2.4vw,30px); font-weight: 200; color: var(--cream); display: block; line-height: 1.2; }
+    .port-slide-cat { font-size: 10px; font-weight: 200; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 8px; }
+
+    /* Navegação */
+    .port-nav { display: flex; align-items: center; justify-content: space-between; padding: 28px var(--page-margin) var(--section-pad); }
+    .port-dots { display: flex; gap: 8px; align-items: center; }
+    .port-dot { height: 1px; background: rgba(63,51,41,.2); cursor: pointer; transition: width .4s var(--ease-out), background .3s; width: 28px; border: none; padding: 0; }
+    .port-dot.active { width: 52px; background: var(--espresso); }
+    .port-arrows { display: flex; gap: 12px; }
+    .port-arrow {
+      width: 48px; height: 48px;
+      border: 1px solid rgba(188,175,143,.4);
+      background: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--espresso);
+      transition: background .3s, border-color .3s, color .3s;
+    }
+    .port-arrow:hover { background: var(--espresso); border-color: var(--espresso); color: var(--cream); }
+    .btn-line { font-size: 12px; font-weight: 300; letter-spacing: 0.16em; color: var(--espresso); border-bottom: 1px solid var(--gold); padding-bottom: 4px; transition: color .3s; }
+    .btn-line:hover { color: var(--gold-dark); }
+
+    /* ══════════════════════════════════════════════════════
+       PROCESSO — horizontal timeline
+    ══════════════════════════════════════════════════════ */
+    #processo { padding-block: var(--section-pad); background: var(--cream-alt); }
+    .proc-heading { font-size: clamp(32px,4vw,52px); font-weight: 200; color: var(--espresso); margin-bottom: clamp(48px,7vw,88px); letter-spacing: -0.01em; }
+    .proc-timeline { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; position: relative; }
+    .proc-timeline::before { content:''; position:absolute; top: 14px; left: 14px; right: 14px; height: 1px; background: var(--gold); opacity: .5; }
+    .proc-step { padding-right: clamp(32px,4vw,56px); padding-top: 48px; border-right: 1px solid rgba(63,51,41,.2); }
+    .proc-step:last-child { border-right: none; padding-right: 0; }
+    .proc-dot { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--espresso); background: var(--cream-alt); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; position: relative; z-index: 1; }
+    .proc-dot span { font-size: 8px; font-weight: 300; letter-spacing: 0.08em; color: var(--espresso); }
+    .step-t { font-size: clamp(17px,2vw,22px); font-weight: 300; color: var(--espresso); margin-bottom: 12px; line-height: 1.3; }
+    .step-b { font-size: 15px; font-weight: 200; line-height: 1.8; color: var(--warm-gray); }
+
+    /* ══════════════════════════════════════════════════════
+       CONTATO — Horizon studio inspired
+    ══════════════════════════════════════════════════════ */
+    #contato { padding-block: var(--section-pad); background: var(--cream); border-top: 1px solid rgba(188,175,143,.2); }
+    .cont-wrap { display: grid; grid-template-columns: 1fr 1.8fr; gap: clamp(40px,6vw,96px); align-items: start; }
+    .cont-nav { display: flex; flex-direction: column; gap: 14px; margin-top: 28px; padding-left: 24px; }
+    .cont-nav a { font-size: 13px; font-weight: 200; letter-spacing: 0.12em; color: var(--charcoal); transition: color .3s; }
+    .cont-nav a:hover { color: var(--gold-dark); }
+    .cont-heading { font-size: clamp(36px,5vw,64px); font-weight: 200; color: var(--espresso); margin-block: 20px 16px; letter-spacing: -0.01em; line-height: 1.1; }
+    .cont-sub { font-size: 13px; font-weight: 200; color: var(--warm-gray); line-height: 1.75; margin-bottom: 40px; }
+    .cont-socials { display: flex; gap: 24px; padding-top: 32px; border-top: 1px solid rgba(188,175,143,.25); }
+    .cont-socials a { font-size: 11px; font-weight: 200; letter-spacing: 0.16em; text-transform: uppercase; color: var(--espresso); border-bottom: 1px solid var(--gold); padding-bottom: 2px; transition: color .3s; }
+    .cont-socials a:hover { color: var(--gold-dark); }
+    .cont-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(188,175,143,.2); margin-bottom: 2px; }
+    .cont-info-cell { background: var(--cream); padding: 28px 24px; }
+    .cont-lbl { font-size: 9px; font-weight: 300; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold-dark); display: block; margin-bottom: 8px; }
+    .cont-val { font-size: clamp(14px,1.5vw,17px); font-weight: 300; color: var(--espresso); display: block; }
+    .cont-logo { width: 100%; margin-top: 32px; }
+    .cont-logo img { width: min(480px, 100%); height: auto; opacity: 0.75; }
+
+    /* ══════════════════════════════════════════════════════
+       FOOTER — minimal cream
+    ══════════════════════════════════════════════════════ */
+    /* Logo acima do heading no contato */
+    .cont-logo-svg { width: 120%; max-width: 504px; height: auto; margin-top: 20px; margin-bottom: 12px; display: block; margin-left: calc(-7.5% + 8px); }
+
+    footer { background: var(--cream); border-top: 1px solid rgba(188,175,143,.25); padding-block: 56px 36px; }
+    .foot-form-wrap { margin-bottom: 48px; }
+    .foot-form-label { font-size: 10px; font-weight: 300; letter-spacing: 0.28em; text-transform: uppercase; color: var(--warm-gray); margin-bottom: 20px; display: block; }
+    .foot-form { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+    .foot-input { font-family: var(--font-sans); font-size: 13px; font-weight: 200; color: var(--espresso); background: transparent; border: none; border-bottom: 1px solid rgba(188,175,143,.35); padding: 10px 0; outline: none; transition: border-color .3s; width: 100%; }
+    .foot-input:focus { border-color: var(--espresso); }
+    .foot-input::placeholder { color: rgba(63,51,41,.3); }
+    .cont-nav { align-items: flex-start; }
+    .foot-form-btn { font-family: var(--font-sans); font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream); background: var(--espresso); padding: 10px 28px; border: none; cursor: pointer; white-space: nowrap; transition: background .3s; }
+    .foot-form-btn:hover { background: var(--gold); }
+    .foot-divider { height: 1px; background: rgba(188,175,143,.2); margin-bottom: 36px; }
+    .foot-nav-vert { display: flex; flex-direction: column; gap: 14px; margin-bottom: 48px; }
+    .foot-nav-vert a { font-size: 13px; font-weight: 200; letter-spacing: 0.14em; color: var(--charcoal); transition: color .3s; }
+    .foot-nav-vert a:hover { color: var(--gold-dark); }
+    .foot-bottom { display: flex; align-items: center; justify-content: space-between; }
+    .foot-logo-img { width: min(240px, 60%); height: auto; }
+    .foot-copy { font-size: 10px; font-weight: 200; color: rgba(63,51,41,.4); letter-spacing: 0.06em; }
+
+    /* ══════════════════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      :root { --nav-h: 60px; --page-margin: 20px; }
+      .sobre-layout { grid-template-columns: 1fr; }
+      .sobre-stats-row { grid-template-columns: repeat(3,1fr); }
+      .serv-item { grid-template-columns: 40px 1fr; grid-template-rows: auto auto; }
+      .serv-desc { grid-column: 2; }
+      .serv-arrow { display: none; }
+      .port-grid { grid-template-columns: 1fr 1fr; }
+      .port-item:first-child { grid-column: 1/-1; }
+      .port-item:first-child img { aspect-ratio: 16/9; }
+      .proc-timeline { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .proc-timeline::before { display: none; }
+      .cont-wrap { grid-template-columns: 1fr; }
+      .cont-nav { flex-direction: row; flex-wrap: wrap; gap: 12px 24px; }
+      .foot-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
+      .foot-nav { flex-wrap: wrap; gap: 16px; }
+    }
+    @media (max-width: 560px) {
+      .sobre-stats-row { grid-template-columns: 1fr; }
+      .port-grid { grid-template-columns: 1fr; }
+      .proc-timeline { grid-template-columns: 1fr; }
+      .cont-info-grid { grid-template-columns: 1fr; }
+      .serv-item { grid-template-columns: 1fr; }
+      .serv-num { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ── MOBILE OVERLAY + DRAWER ───────────────────────── -->
+<div class="mobile-overlay" id="overlay"></div>
+<div class="mobile-drawer" id="drawer">
+  <button class="drawer-close" id="drawerClose">✕</button>
+  <a href="#sobre"    onclick="closeDrawer()">Sobre</a>
+  <a href="#servicos" onclick="closeDrawer()">Serviços</a>
+  <a href="#processo" onclick="closeDrawer()">Processo</a>
+  <a href="#portfolio" onclick="closeDrawer()">Portfólio</a>
+  <a href="#contato"  onclick="closeDrawer()">Contato</a>
+</div>
+
+<!-- ── NAV — barra creme fixa ────────────────────────── -->
+<header id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo" aria-label="Auciele Alves">
+      <img class="nav-mark" src="assets/logo.png" alt="Auciele Alves" />
+    </a>
+    <button class="hamburger" id="menuBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ── HERO — full bleed ──────────────────────────────── -->
+<section id="hero">
+  <img src="assets/capa.png" alt="Projeto Auciele Alves" />
+  <!-- Wordmark AUCIELE ALVES centralizado na hero -->
+  <div class="hero-wordmark">
+    <img src="assets/wordmark.svg" alt="Auciele Alves" />
+  </div>
+</section>
+
+<!-- ── SOBRE ─────────────────────────────────────────── -->
+<section id="sobre">
+  <div class="inner">
+
+    <p class="section-label reveal" style="margin-bottom: clamp(24px,3vw,40px);">Sobre nós</p>
+
+    <div class="sobre-layout">
+      <!-- Esquerda: foto -->
+      <div class="sobre-img-col reveal">
+        <img src="assets/auciele.jpg" alt="Auciele Alves" loading="lazy" />
+      </div>
+
+      <!-- Direita: nome + tagline + texto + 3 stats -->
+      <div class="sobre-text-col reveal d1">
+        <div>
+          <h2 class="sobre-name">Arquitetura que reflete<br>sua visão única<br>e personalidade</h2>
+        </div>
+        <p class="sobre-desc">A Auciele Alves Arquitetura nasce da crença de que um projeto bem executado transforma não apenas ambientes — transforma vidas. Com sensibilidade estética e rigor técnico, acompanhamos você do primeiro esboço à chave na mão. Arquitetura de ponta a ponta significa presença total: no briefing, no projeto, na escolha dos materiais, na gestão da obra e na entrega. Sem terceirizar&nbsp;cuidado.</p>
+
+        <!-- 3 quadrados com stats -->
+        <div class="sobre-stats-row">
+          <div class="stat-sq">
+            <span class="sq-num">150+</span>
+            <span class="sq-lbl">Projetos entregues</span>
+          </div>
+          <div class="stat-sq">
+            <span class="sq-num">98%</span>
+            <span class="sq-lbl">Clientes satisfeitos</span>
+          </div>
+          <div class="stat-sq">
+            <span class="sq-num">+10</span>
+            <span class="sq-lbl">Anos de experiência</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVIÇOS ──────────────────────────────────────── -->
+<section id="servicos">
+  <div class="inner">
+    <div class="serv-top reveal">
+      <p class="section-label">O que fazemos</p>
+      <h2 class="serv-heading reveal d1">Soluções completas<br>em arquitetura</h2>
+    </div>
+    <ul class="serv-list">
+      <li class="serv-item reveal">
+        <span class="serv-num">01</span>
+        <span class="serv-name">Arquitetura Residencial</span>
+        <span class="serv-desc">Casas e apartamentos projetados para refletir quem você é — com funcionalidade, beleza e identidade.</span>
+        <svg class="serv-arrow" width="28" height="12" viewBox="0 0 28 12" fill="none"><path d="M1 6h26M20 1l6 5-6 5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+      </li>
+      <li class="serv-item reveal d1">
+        <span class="serv-num">02</span>
+        <span class="serv-name">Arquitetura Comercial</span>
+        <span class="serv-desc">Escritórios, lojas e espaços corporativos que comunicam a identidade da sua marca.</span>
+        <svg class="serv-arrow" width="28" height="12" viewBox="0 0 28 12" fill="none"><path d="M1 6h26M20 1l6 5-6 5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+      </li>
+      <li class="serv-item reveal d2">
+        <span class="serv-num">03</span>
+        <span class="serv-name">Design de Interiores</span>
+        <span class="serv-desc">Ambientes com alma: paleta de materiais, mobiliário, iluminação e acabamentos com precisão estética.</span>
+        <svg class="serv-arrow" width="28" height="12" viewBox="0 0 28 12" fill="none"><path d="M1 6h26M20 1l6 5-6 5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+      </li>
+      <li class="serv-item reveal d3">
+        <span class="serv-num">04</span>
+        <span class="serv-name">Gestão de Obra</span>
+        <span class="serv-desc">Acompanhamento técnico integral do projeto executivo ao acabamento final.</span>
+        <svg class="serv-arrow" width="28" height="12" viewBox="0 0 28 12" fill="none"><path d="M1 6h26M20 1l6 5-6 5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── PORTFÓLIO ─────────────────────────────────────── -->
+<section id="portfolio">
+  <div class="inner">
+    <div class="port-header reveal">
+      <div>
+        <p class="section-label" style="margin-bottom:14px;">Portfólio</p>
+        <h2 class="port-heading">Projetos que<br>contam histórias.</h2>
+      </div>
+      <span class="port-counter" id="portCounter">01 / 04</span>
+    </div>
+  </div>
+
+  <!-- Slider full bleed -->
+  <div class="port-slider-wrap">
+    <div class="port-track" id="portTrack">
+
+      <div class="port-slide">
+        <img class="port-slide-img" src="assets/recepcao.png" alt="Espaço Institucional" loading="lazy"/>
+        <div class="port-slide-info">
+          <div>
+            <span class="port-slide-num">01 — Arquitetura Comercial</span>
+            <span class="port-slide-title">Espaço Institucional</span>
+          </div>
+          <span class="port-slide-cat">Ver projeto →</span>
+        </div>
+      </div>
+
+      <div class="port-slide">
+        <img class="port-slide-img" src="assets/capa.png" alt="Residência Contemporânea" loading="lazy"/>
+        <div class="port-slide-info">
+          <div>
+            <span class="port-slide-num">02 — Arquitetura Residencial</span>
+            <span class="port-slide-title">Residência Contemporânea</span>
+          </div>
+          <span class="port-slide-cat">Ver projeto →</span>
+        </div>
+      </div>
+
+      <div class="port-slide">
+        <img class="port-slide-img" src="assets/obra.png" alt="Design de Interiores" loading="lazy"/>
+        <div class="port-slide-info">
+          <div>
+            <span class="port-slide-num">03 — Design de Interiores</span>
+            <span class="port-slide-title">Interiores com Identidade</span>
+          </div>
+          <span class="port-slide-cat">Ver projeto →</span>
+        </div>
+      </div>
+
+      <div class="port-slide">
+        <img class="port-slide-img" src="assets/logo-iluminado.png" alt="Branding Espacial" loading="lazy"/>
+        <div class="port-slide-info">
+          <div>
+            <span class="port-slide-num">04 — Branding Espacial</span>
+            <span class="port-slide-title">Identidade Tridimensional</span>
+          </div>
+          <span class="port-slide-cat">Ver projeto →</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Navegação -->
+  <div class="port-nav">
+    <div class="port-dots" id="portDots">
+      <button class="port-dot active" onclick="goToSlide(0)"></button>
+      <button class="port-dot" onclick="goToSlide(1)"></button>
+      <button class="port-dot" onclick="goToSlide(2)"></button>
+      <button class="port-dot" onclick="goToSlide(3)"></button>
+    </div>
+    <div class="port-arrows">
+      <button class="port-arrow" onclick="prevSlide()" aria-label="Anterior">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><path d="M17 6H1M7 1L1 6l6 5" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="port-arrow" onclick="nextSlide()" aria-label="Próximo">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><path d="M1 6h16M11 1l6 5-6 5" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROCESSO ──────────────────────────────────────── -->
+<section id="processo">
+  <div class="inner">
+    <p class="section-label reveal">Como trabalhamos</p>
+    <h2 class="proc-heading reveal d1">Um processo claro,<br>do início ao fim.</h2>
+    <div class="proc-timeline reveal d2">
+      <div class="proc-step">
+        <div class="proc-dot"><span>01</span></div>
+        <h3 class="step-t">Briefing &amp; Conceito</h3>
+        <p class="step-b">Escutamos você com atenção para construir a base do projeto.</p>
+      </div>
+      <div class="proc-step">
+        <div class="proc-dot"><span>02</span></div>
+        <h3 class="step-t">Projeto &amp; Desenvolvimento</h3>
+        <p class="step-b">Plantas, perspectivas e especificações técnicas com revisões.</p>
+      </div>
+      <div class="proc-step">
+        <div class="proc-dot"><span>03</span></div>
+        <h3 class="step-t">Aprovações &amp; Licenças</h3>
+        <p class="step-b">Toda documentação e aprovações junto a órgãos competentes.</p>
+      </div>
+      <div class="proc-step">
+        <div class="proc-dot"><span>04</span></div>
+        <h3 class="step-t">Execução &amp; Entrega</h3>
+        <p class="step-b">Gestão da obra até a entrega com as chaves na sua mão.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTATO ───────────────────────────────────────── -->
+<section id="contato">
+  <div class="cont-wrap inner">
+    <div class="cont-left reveal">
+      <p class="section-label">Contato</p>
+      <img src="assets/logo-contato.svg" alt="Auciele Alves" class="cont-logo-svg" />
+      <h2 class="cont-heading">Vamos criar algo<br>incrível juntos?</h2>
+      <p class="cont-sub">Respondemos em até 24 horas com uma proposta personalizada.</p>
+
+      <!-- Formulário abaixo do heading -->
+      <form class="foot-form" style="margin-top: 24px; margin-bottom: 0;" onsubmit="footSubmit(event)">
+        <input class="foot-input" type="text" placeholder="Seu nome" required />
+        <input class="foot-input" type="email" placeholder="Seu e-mail" required />
+        <input class="foot-input" type="text" placeholder="Assunto" required />
+        <button type="submit" class="foot-form-btn" style="align-self: flex-start; margin-top: 8px;">Enviar</button>
+      </form>
+
+      <div class="cont-socials" style="margin-top: 32px;">
+        <a href="#">Instagram</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Pinterest</a>
+      </div>
+    </div>
+    <div class="cont-right reveal d1" style="padding-top: clamp(60px, 8vw, 120px);">
+
+      <div class="cont-info-grid">
+        <div class="cont-info-cell">
+          <span class="cont-lbl">E-mail</span>
+          <span class="cont-val">contato@aucielealves.com.br</span>
+        </div>
+        <div class="cont-info-cell">
+          <span class="cont-lbl">WhatsApp</span>
+          <span class="cont-val">+55 (00) 00000-0000</span>
+        </div>
+        <div class="cont-info-cell">
+          <span class="cont-lbl">Localização</span>
+          <span class="cont-val">Brasil</span>
+        </div>
+        <div class="cont-info-cell">
+          <span class="cont-lbl">Atendimento</span>
+          <span class="cont-val">Seg–Sex, 9h–18h</span>
+        </div>
+      </div>
+
+      <!-- Navegação vertical — abaixo do grid de info -->
+      <nav class="cont-nav reveal d2">
+        <a href="#sobre">Sobre</a>
+        <a href="#servicos">Serviços</a>
+        <a href="#processo">Processo</a>
+        <a href="#portfolio">Portfólio</a>
+        <a href="#contato">Contato</a>
+      </nav>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ────────────────────────────────────────── -->
+<footer>
+  <div class="inner">
+
+    <!-- Logo esquerda + copyright direita -->
+    <div class="foot-bottom">
+      <img src="assets/logo-footer.svg" alt="Auciele Alves" class="foot-logo-img" />
+      <p class="foot-copy">© 2025 Auciele Alves Arquitetura. Todos os direitos reservados.</p>
+    </div>
+
+  </div>
+</footer>
+
+<!-- ── SCRIPTS ───────────────────────────────────────── -->
+<script>
+  // Mobile drawer
+  const overlay = document.getElementById('overlay');
+  const drawer = document.getElementById('drawer');
+  const menuBtn = document.getElementById('menuBtn');
+  const drawerClose = document.getElementById('drawerClose');
+  function openDrawer() { drawer.classList.add('open'); overlay.classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeDrawer() { drawer.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow=''; }
+  menuBtn.addEventListener('click', openDrawer);
+  drawerClose.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Nav transparente após hero
+  const navEl = document.getElementById('nav');
+  const heroEl = document.getElementById('hero');
+  window.addEventListener('scroll', () => {
+    const heroBottom = heroEl.offsetTop + heroEl.offsetHeight;
+    navEl.classList.toggle('transparent', window.scrollY > heroBottom - navEl.offsetHeight);
+  }, { passive: true });
+
+  // Mini form footer
+  function footSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.foot-form-btn');
+    btn.textContent = 'Enviado ✓';
+    btn.style.background = 'var(--gold)';
+    setTimeout(() => { btn.textContent = 'Enviar'; btn.style.background = ''; e.target.reset(); }, 3000);
+  }
+
+  // Portfolio slider
+  let current = 0;
+  const total = 4;
+  const track = document.getElementById('portTrack');
+  const dots = document.querySelectorAll('.port-dot');
+  const counter = document.getElementById('portCounter');
+
+  function goToSlide(n) {
+    current = (n + total) % total;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    counter.textContent = `${String(current + 1).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;
+  }
+  function nextSlide() { goToSlide(current + 1); }
+  function prevSlide() { goToSlide(current - 1); }
+
+  // Auto-advance a cada 5s
+  let autoPlay = setInterval(nextSlide, 5000);
+  track.parentElement.addEventListener('mouseenter', () => clearInterval(autoPlay));
+  track.parentElement.addEventListener('mouseleave', () => { autoPlay = setInterval(nextSlide, 5000); });
+
+  // Swipe touch
+  let touchX = 0;
+  track.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', e => {
+    const diff = touchX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) diff > 0 ? nextSlide() : prevSlide();
+  });
+</script>
+</body>
+</html>
