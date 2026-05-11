@@ -248,17 +248,28 @@
     /* ══════════════════════════════════════════════════════
        SOBRE — editorial, bento grid como referência
     ══════════════════════════════════════════════════════ */
-    #sobre { padding-block: var(--section-pad); background: var(--cream); }
+    #sobre { padding-block: var(--section-pad); background: var(--cream); position: relative; overflow: hidden; }
+    #sobre::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('assets/grafismo.svg') center/cover no-repeat;
+      opacity: 1;
+      pointer-events: none;
+      z-index: 0;
+    }
+    #sobre .section-label,
+    #sobre .sobre-layout { position: relative; z-index: 1; }
     .section-label { font-size: 13px; font-weight: 300; letter-spacing: 0.22em; text-transform: uppercase; color: var(--warm-gray); display: block; }
 
     /* Layout: imagem esquerda | texto + stats direita */
     .sobre-layout { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(40px,6vw,80px); align-items: center; }
     .sobre-img-col { overflow: hidden; aspect-ratio: 4/3; }
     .sobre-img-col img { width: 100%; height: 100%; object-fit: cover; object-position: center 28%; display: block; }
-    .sobre-text-col { display: flex; flex-direction: column; gap: clamp(18px,2.5vw,28px); padding-top: 8px; }
+    .sobre-text-col { display: flex; flex-direction: column; gap: clamp(10px,1.5vw,16px); padding-top: 8px; }
     .sobre-name { font-size: clamp(28px,3.8vw,48px); font-weight: 200; color: var(--espresso); letter-spacing: 0.03em; line-height: 1.1; }
     .sobre-tagline-txt { font-size: 11px; font-weight: 200; letter-spacing: 0.24em; text-transform: lowercase; color: var(--gold-dark); margin-top: -6px; }
-    .sobre-desc { font-size: 16px; font-weight: 200; line-height: 1.85; color: var(--warm-gray); }
+    .sobre-desc { font-size: 16px; font-weight: 200; line-height: 1.85; color: var(--warm-gray); max-width: 560px; }
     .sobre-stats-row { display: flex; margin-top: 8px; align-items: flex-start; }
     .stat-sq { display: flex; flex-direction: column; gap: 6px; padding-right: clamp(24px,4vw,48px); margin-right: clamp(24px,4vw,48px); border-right: 1px solid rgba(188,175,143,.4); }
     .stat-sq:last-child { border-right: none; padding-right: 0; margin-right: 0; }
@@ -270,14 +281,14 @@
     ══════════════════════════════════════════════════════ */
     #servicos { padding-block: var(--section-pad); background: var(--cream-alt); }
     .serv-top { margin-bottom: clamp(48px,6vw,72px); }
-    .serv-heading { font-size: clamp(32px,4vw,52px); font-weight: 200; color: var(--espresso); margin-top: 16px; letter-spacing: -0.01em; }
+    .serv-heading { font-size: clamp(32px,4vw,52px); font-weight: 200; color: #fff8eb; margin-top: 16px; letter-spacing: -0.01em; }
     .serv-list { list-style: none; }
     .serv-item { display: grid; grid-template-columns: 56px 1fr 1fr auto; align-items: center; gap: 24px; padding-block: clamp(24px,3vw,36px); border-top: 1px solid rgba(63,51,41,.25); cursor: pointer; transition: background .3s; }
     .serv-item:last-child { border-bottom: 1px solid rgba(63,51,41,.25); }
     .serv-item:hover { background: rgba(188,175,143,.08); margin-inline: -24px; padding-inline: 24px; }
-    .serv-num { font-size: 11px; font-weight: 200; color: var(--espresso); letter-spacing: 0.1em; }
-    .serv-name { font-size: clamp(18px,2.2vw,26px); font-weight: 300; color: var(--espresso); }
-    .serv-desc { font-size: 16px; font-weight: 200; color: var(--warm-gray); line-height: 1.6; }
+    .serv-num { font-size: 11px; font-weight: 200; color: #fff8eb; letter-spacing: 0.1em; }
+    .serv-name { font-size: clamp(18px,2.2vw,26px); font-weight: 300; color: #fff8eb; }
+    .serv-desc { font-size: 16px; font-weight: 200; color: #3f3329; line-height: 1.6; }
     .serv-arrow { color: var(--gold); flex-shrink: 0; transition: transform .3s; }
     .serv-item:hover .serv-arrow { transform: translateX(6px); }
 
@@ -347,14 +358,15 @@
        PROCESSO — horizontal timeline
     ══════════════════════════════════════════════════════ */
     #processo { padding-block: var(--section-pad); background: var(--cream-alt); }
-    .proc-heading { font-size: clamp(32px,4vw,52px); font-weight: 200; color: var(--espresso); margin-bottom: clamp(48px,7vw,88px); letter-spacing: -0.01em; }
+    .proc-heading { font-size: clamp(32px,4vw,52px); font-weight: 200; color: #fff8eb; margin-bottom: clamp(48px,7vw,88px); letter-spacing: -0.01em; }
     .proc-timeline { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; position: relative; }
     .proc-timeline::before { content:''; position:absolute; top: 14px; left: 14px; right: 14px; height: 1px; background: var(--gold); opacity: .5; }
-    .proc-step { padding-right: clamp(32px,4vw,56px); padding-top: 48px; border-right: 1px solid rgba(63,51,41,.2); }
+    .proc-step { padding-inline: clamp(36px,4.5vw,60px); padding-top: 48px; border-right: 1px solid rgba(63,51,41,.2); }
+    .proc-step:first-child { padding-left: 0; }
     .proc-step:last-child { border-right: none; padding-right: 0; }
-    .proc-dot { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--espresso); background: var(--cream-alt); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; position: relative; z-index: 1; }
-    .proc-dot span { font-size: 8px; font-weight: 300; letter-spacing: 0.08em; color: var(--espresso); }
-    .step-t { font-size: clamp(17px,2vw,22px); font-weight: 300; color: var(--espresso); margin-bottom: 12px; line-height: 1.3; }
+    .proc-dot { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #fff8eb; background: var(--cream-alt); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; position: relative; z-index: 1; }
+    .proc-dot span { font-size: 13px; font-weight: 300; letter-spacing: 0.06em; color: #fff8eb; }
+    .step-t { font-size: clamp(17px,2vw,22px); font-weight: 300; color: #fff8eb; margin-bottom: 12px; line-height: 1.3; }
     .step-b { font-size: 15px; font-weight: 200; line-height: 1.8; color: var(--warm-gray); }
 
     /* ══════════════════════════════════════════════════════
@@ -381,7 +393,7 @@
        FOOTER — minimal cream
     ══════════════════════════════════════════════════════ */
     /* Logo acima do heading no contato */
-    .cont-logo-svg { width: 120%; max-width: 504px; height: auto; margin-top: 20px; margin-bottom: 12px; display: block; margin-left: calc(-7.5% + 8px); }
+    .cont-logo-svg { width: 120%; max-width: 504px; height: auto; margin-top: 20px; margin-bottom: 12px; display: block; margin-left: calc(-7.5% + 32px); }
 
     footer { background: var(--cream); border-top: 1px solid rgba(188,175,143,.25); padding-block: 56px 36px; }
     .foot-form-wrap { margin-bottom: 48px; }
@@ -404,30 +416,127 @@
     /* ══════════════════════════════════════════════════════
        RESPONSIVE
     ══════════════════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════
+       TABLET  ≤ 900px
+    ═══════════════════════════════════════════════════ */
     @media (max-width: 900px) {
-      :root { --nav-h: 60px; --page-margin: 20px; }
-      .sobre-layout { grid-template-columns: 1fr; }
-      .sobre-stats-row { grid-template-columns: repeat(3,1fr); }
-      .serv-item { grid-template-columns: 40px 1fr; grid-template-rows: auto auto; }
+      :root {
+        --nav-h: 60px;
+        --logo-h: 90px;
+        --page-margin: 28px;
+        --section-pad: 72px;
+      }
+
+      /* NAV */
+      #nav { overflow: hidden; }
+
+      /* HERO wordmark */
+      .hero-wordmark { width: 110vw; bottom: -12vw; }
+
+      /* SOBRE */
+      .sobre-layout { grid-template-columns: 1fr; gap: 32px; }
+      .sobre-img-col { aspect-ratio: 4/3; }
+      .sobre-desc { max-width: 100%; }
+      .sobre-stats-row { gap: 24px 40px; }
+
+      /* SERVIÇOS */
+      .serv-item { grid-template-columns: 40px 1fr; }
       .serv-desc { grid-column: 2; }
       .serv-arrow { display: none; }
-      .port-grid { grid-template-columns: 1fr 1fr; }
-      .port-item:first-child { grid-column: 1/-1; }
-      .port-item:first-child img { aspect-ratio: 16/9; }
+
+      /* PROCESSO */
       .proc-timeline { grid-template-columns: 1fr 1fr; gap: 32px; }
       .proc-timeline::before { display: none; }
-      .cont-wrap { grid-template-columns: 1fr; }
-      .cont-nav { flex-direction: row; flex-wrap: wrap; gap: 12px 24px; }
-      .foot-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
-      .foot-nav { flex-wrap: wrap; gap: 16px; }
+      .proc-step { border-right: none; padding-right: 0; border-bottom: 1px solid rgba(255,248,235,.25); padding-bottom: 28px; }
+      .proc-step:nth-child(odd) { border-right: 1px solid rgba(255,248,235,.25); padding-right: clamp(20px,3vw,40px); }
+      .proc-step:last-child, .proc-step:nth-last-child(2):nth-child(odd) { border-bottom: none; }
+
+      /* PORTFÓLIO */
+      .port-slide-img { height: 420px; }
+
+      /* CONTATO */
+      .cont-wrap { grid-template-columns: 1fr; gap: 40px; }
+      .cont-right { padding-top: 0 !important; }
+      .cont-logo-svg { width: 85% !important; max-width: 100% !important; margin-left: 0 !important; }
+      .cont-nav { flex-direction: row; flex-wrap: wrap; gap: 10px 24px; padding-left: 0; }
+      .foot-form-row { grid-template-columns: 1fr; }
+      .foot-form-row--full { grid-template-columns: 1fr; }
+      .foot-form-btn { width: 100%; text-align: center; }
+
+      /* FOOTER */
+      .foot-bottom { flex-direction: column; gap: 12px; }
+      .foot-logo-img { width: 200px; }
     }
+
+    /* ═══════════════════════════════════════════════════
+       MOBILE  ≤ 560px
+    ═══════════════════════════════════════════════════ */
     @media (max-width: 560px) {
-      .sobre-stats-row { grid-template-columns: 1fr; }
-      .port-grid { grid-template-columns: 1fr; }
-      .proc-timeline { grid-template-columns: 1fr; }
-      .cont-info-grid { grid-template-columns: 1fr; }
-      .serv-item { grid-template-columns: 1fr; }
+      :root {
+        --nav-h: 56px;
+        --logo-h: 74px;
+        --page-margin: 20px;
+        --section-pad: 56px;
+      }
+      html, body { overflow-x: hidden; max-width: 100vw; }
+
+      /* NAV logo: menor e sem overflow */
+      .nav-mark { transform: translateX(-30%) translateY(calc(var(--nav-h) / 2 - 10px)); }
+
+      /* HERO wordmark - contido na tela */
+      .hero-wordmark { width: 100vw; bottom: -10vw; left: 0; transform: none; }
+      #hero { overflow: hidden; }
+
+      /* SOBRE */
+      .sobre-stats-row { flex-wrap: wrap; gap: 16px 28px; }
+      .stat-sq { min-width: 80px; }
+      .sq-num { font-size: 28px; }
+      .sobre-name { font-size: 26px; }
+      .sobre-desc { font-size: 14px; max-width: 100%; }
+
+      /* SERVIÇOS */
+      .serv-item { grid-template-columns: 1fr; gap: 6px; padding-block: 20px; }
       .serv-num { display: none; }
+      .serv-name { font-size: 17px; }
+      .serv-desc { font-size: 14px; }
+      .serv-heading { font-size: 26px; }
+
+      /* PROCESSO */
+      .proc-timeline { grid-template-columns: 1fr; gap: 0; }
+      .proc-step { border-right: none !important; padding-right: 0 !important; padding-left: 0 !important; border-bottom: 1px solid rgba(255,248,235,.2); padding-bottom: 24px; margin-bottom: 24px; }
+      .proc-step:last-child { border-bottom: none; margin-bottom: 0; }
+      .proc-heading { font-size: 26px; margin-bottom: 40px; }
+      .step-t { font-size: 17px; }
+      .step-b { font-size: 14px; }
+
+      /* PORTFÓLIO */
+      .port-slider-wrap { overflow: hidden; }
+      .port-track { display: flex; }
+      .port-slide { min-width: 100%; width: 100%; flex-shrink: 0; padding-inline: var(--page-margin); box-sizing: border-box; }
+      .port-slide-img { height: 300px; }
+      .port-nav { padding-inline: var(--page-margin); }
+      .port-heading { font-size: 26px; }
+
+      /* CONTATO */
+      .cont-heading { font-size: 28px; }
+      .cont-logo-svg { width: 85% !important; max-width: 100% !important; margin-left: 0 !important; }
+      .cont-info-grid { grid-template-columns: 1fr; }
+      .cont-val { font-size: 14px; }
+      .cont-nav { padding-left: 0; }
+
+      /* CITAÇÃO */
+      #citacao { grid-template-columns: 1fr; }
+      .cit-img { aspect-ratio: 16/9; }
+
+      /* FOOTER */
+      .foot-form { width: 100%; }
+      .foot-input { font-size: 14px; }
+      .foot-bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .foot-logo-img { width: 160px; }
+      .foot-copy { font-size: 10px; }
+
+      /* DRAWER */
+      .mobile-drawer a { font-size: 22px; padding-block: 16px; }
     }
   </style>
 </head>
@@ -481,7 +590,7 @@
       <!-- Direita: nome + tagline + texto + 3 stats -->
       <div class="sobre-text-col reveal d1">
         <div>
-          <h2 class="sobre-name">Arquitetura que reflete<br>sua visão única<br>e personalidade</h2>
+          <h2 class="sobre-name">Arquitetura de<br>ponta a ponta</h2>
         </div>
         <p class="sobre-desc">A Auciele Alves Arquitetura nasce da crença de que um projeto bem executado transforma não apenas ambientes — transforma vidas. Com sensibilidade estética e rigor técnico, acompanhamos você do primeiro esboço à chave na mão. Arquitetura de ponta a ponta significa presença total: no briefing, no projeto, na escolha dos materiais, na gestão da obra e na entrega. Sem terceirizar&nbsp;cuidado.</p>
 
@@ -558,46 +667,30 @@
     <div class="port-track" id="portTrack">
 
       <div class="port-slide">
-        <img class="port-slide-img" src="assets/recepcao.png" alt="Espaço Institucional" loading="lazy"/>
+        <img class="port-slide-img" src="assets/proj-sala.png" alt="Living integrado" loading="lazy"/>
         <div class="port-slide-info">
-          <div>
-            <span class="port-slide-num">01 — Arquitetura Comercial</span>
-            <span class="port-slide-title">Espaço Institucional</span>
-          </div>
-          <span class="port-slide-cat">Ver projeto →</span>
+          <span class="port-slide-title">Living Integrado</span>
         </div>
       </div>
 
       <div class="port-slide">
-        <img class="port-slide-img" src="assets/capa.png" alt="Residência Contemporânea" loading="lazy"/>
+        <img class="port-slide-img" src="assets/proj-cozinha.png" alt="Cozinha minimalista" loading="lazy"/>
         <div class="port-slide-info">
-          <div>
-            <span class="port-slide-num">02 — Arquitetura Residencial</span>
-            <span class="port-slide-title">Residência Contemporânea</span>
-          </div>
-          <span class="port-slide-cat">Ver projeto →</span>
+          <span class="port-slide-title">Cozinha Minimalista</span>
         </div>
       </div>
 
       <div class="port-slide">
-        <img class="port-slide-img" src="assets/obra.png" alt="Design de Interiores" loading="lazy"/>
+        <img class="port-slide-img" src="assets/proj-gourmet.png" alt="Área gourmet" loading="lazy"/>
         <div class="port-slide-info">
-          <div>
-            <span class="port-slide-num">03 — Design de Interiores</span>
-            <span class="port-slide-title">Interiores com Identidade</span>
-          </div>
-          <span class="port-slide-cat">Ver projeto →</span>
+          <span class="port-slide-title">Espaço Gourmet Externo</span>
         </div>
       </div>
 
       <div class="port-slide">
-        <img class="port-slide-img" src="assets/logo-iluminado.png" alt="Branding Espacial" loading="lazy"/>
+        <img class="port-slide-img" src="assets/proj-fachada.png" alt="Fachada residencial" loading="lazy"/>
         <div class="port-slide-info">
-          <div>
-            <span class="port-slide-num">04 — Branding Espacial</span>
-            <span class="port-slide-title">Identidade Tridimensional</span>
-          </div>
-          <span class="port-slide-cat">Ver projeto →</span>
+          <span class="port-slide-title">Fachada Contemporânea</span>
         </div>
       </div>
 
