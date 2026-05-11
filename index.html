@@ -393,7 +393,7 @@
        FOOTER — minimal cream
     ══════════════════════════════════════════════════════ */
     /* Logo acima do heading no contato */
-    .cont-logo-svg { width: 120%; max-width: 504px; height: auto; margin-top: 20px; margin-bottom: 12px; display: block; margin-left: calc(-7.5% + 32px); }
+    .cont-logo-svg { width: 120%; max-width: 504px; height: auto; margin-top: 20px; margin-bottom: 12px; display: block; margin-left: calc(-7.5% + 22px); }
 
     footer { background: var(--cream); border-top: 1px solid rgba(188,175,143,.25); padding-block: 56px 36px; }
     .foot-form-wrap { margin-bottom: 48px; }
@@ -427,8 +427,9 @@
         --section-pad: 72px;
       }
 
-      /* NAV */
-      #nav { overflow: hidden; }
+      /* NAV — logo visível na frente da imagem */
+      #nav { overflow: visible; z-index: 300; }
+      .nav-logo { z-index: 301; }
 
       /* HERO wordmark */
       .hero-wordmark { width: 110vw; bottom: -12vw; }
@@ -439,10 +440,12 @@
       .sobre-desc { max-width: 100%; }
       .sobre-stats-row { gap: 24px 40px; }
 
-      /* SERVIÇOS */
-      .serv-item { grid-template-columns: 40px 1fr; }
-      .serv-desc { grid-column: 2; }
+      /* SERVIÇOS — coluna única, alinhado à esquerda */
+      .serv-item { grid-template-columns: 1fr; gap: 6px; }
+      .serv-num { display: none; }
       .serv-arrow { display: none; }
+      .serv-name { font-size: 16px; }
+      .serv-desc { font-size: 14px; grid-column: unset; }
 
       /* PROCESSO */
       .proc-timeline { grid-template-columns: 1fr 1fr; gap: 32px; }
@@ -479,6 +482,9 @@
         --section-pad: 56px;
       }
       html, body { overflow-x: hidden; max-width: 100vw; }
+      /* NAV logo na frente */
+      #nav { overflow: visible !important; z-index: 300; }
+      .nav-logo { z-index: 301; }
 
       /* NAV logo: menor e sem overflow */
       .nav-mark { transform: translateX(-30%) translateY(calc(var(--nav-h) / 2 - 10px)); }
@@ -488,7 +494,9 @@
       #hero { overflow: hidden; }
 
       /* SOBRE */
-      .sobre-stats-row { flex-wrap: wrap; gap: 16px 28px; }
+      .sobre-stats-row { flex-wrap: nowrap; gap: 0; }
+      .stat-sq { flex: 1; padding-right: clamp(12px,3vw,20px); margin-right: clamp(12px,3vw,20px); }
+      .stat-sq:last-child { padding-right: 0; margin-right: 0; }
       .stat-sq { min-width: 80px; }
       .sq-num { font-size: 28px; }
       .sobre-name { font-size: 26px; }
@@ -740,7 +748,7 @@
       <div class="proc-step">
         <div class="proc-dot"><span>04</span></div>
         <h3 class="step-t">Execução &amp; Entrega</h3>
-        <p class="step-b">Gestão da obra até a entrega com as chaves na sua mão.</p>
+        <p class="step-b">Gestão da obra até a entrega com as chaves na sua&nbsp;mão.</p>
       </div>
     </div>
   </div>
